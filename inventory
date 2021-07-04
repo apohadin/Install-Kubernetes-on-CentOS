@@ -1,0 +1,8 @@
+[workernode1]
+worker1 ansible_host=192.168.56.200 ansible_user=vagrant ansible_ssh_pass=vagrant
+
+[workernode2]
+worker2 ansible_host=192.168.56.201 ansible_user=vagrant ansible_ssh_pass=vagrant
+
+[masternode]
+master ansible_host=192.168.56.100 ansible_user=vagrant ansible_ssh_pass=vagrant

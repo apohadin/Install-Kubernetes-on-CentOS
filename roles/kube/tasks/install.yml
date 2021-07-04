@@ -1,0 +1,51 @@
+---
+- copy:
+     dest: /etc/hosts
+     content: "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomain localhost6 localhost6.localdomain6\n192.168.56.100 master.example.com master\n192.168.56.200 worker1.example.com worker1\n192.168.56.201 worker2.example.com worker2\n"
+     force: yes
+  ignore_errors: yes
+
+- yum:
+    name: docker
+    state: present
+  ignore_errors: yes
+
+- systemd:
+     name: docker
+     state: started
+     enabled: yes
+  ignore_errors: yes
+
+- command: sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+  ignore_errors: yes
+
+- systemd:
+     name: firewalld
+     state: stopped
+     enabled: no
+  ignore_errors: yes
+
+- yum_repository:
+     name: "Kubernetes"
+     description: "Kubernetes repo"
+     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+     enabled: yes
+     gpgcheck: yes
+     gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+  ignore_errors: yes
+
+- yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - kubeadm 
+    - kubelet 
+    - kubectl
+  ignore_errors: yes
+
+- systemd:
+     name: kubelet
+     state: started
+     enabled: yes
+  ignore_errors: yes
+
